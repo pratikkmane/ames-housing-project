@@ -1,0 +1,20 @@
+{
+  "background.qmd": {
+    "background.html": "ece5b45b"
+  },
+  "index.qmd": {
+    "index.html": "ccde51a0"
+  },
+  "price-drivers.qmd": {
+    "price-drivers.html": "093ff842"
+  },
+  "pricing-model.qmd": {
+    "pricing-model.html": "2db86908"
+  },
+  "recommendations.qmd": {
+    "recommendations.html": "5ca22b15"
+  },
+  "timing.qmd": {
+    "timing.html": "0b74d81d"
+  }
+}

@@ -1,0 +1,32 @@
+{
+    "id": "1F2F4CEE",
+    "path": "D:/ames-housing-project/background.qmd",
+    "project_path": "background.qmd",
+    "type": "quarto_markdown",
+    "hash": "754932910",
+    "contents": "",
+    "dirty": false,
+    "created": 1776136451896.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "rmdVisualMode": "false",
+        "rmdVisualWrapConfigured": "true",
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "docOutlineVisible": "1",
+        "rmdVisualCollapsedChunks": "",
+        "cursorPosition": "6,46",
+        "scrollLine": "0",
+        "rmdVisualModeLocation": "2:0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1776136475,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1776136475423,
+    "read_only": false,
+    "read_only_alternatives": []
+}

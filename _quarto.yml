@@ -1,0 +1,28 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Ames Housing Market Intelligence"
+  navbar:
+    left:
+      - text: "Home"
+        file: index.qmd
+      - text: "Background"
+        file: background.qmd
+      - text: "Price Drivers"
+        file: price-drivers.qmd
+      - text: "Pricing Model"
+        file: pricing-model.qmd
+      - text: "Market Timing"
+        file: timing.qmd
+      - text: "Recommendations"
+        file: recommendations.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true

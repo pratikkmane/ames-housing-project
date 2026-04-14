@@ -1,0 +1,15 @@
+{
+  "hash": "1e325aa9fc343baa1dff8b9b0590bcdf",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Background & Data\"\n---\n\n## Audience\n\n**Primary:** Ames Real Estate Investment Group\n- Portfolio managers making investment decisions\n- Real estate agents pricing listings\n- Property developers planning construction\n\n**Secondary:** Individual home buyers and sellers\n\n## Problem Statement\n\n**Client Question:** \"What factors drive home values in Ames, and how can we use data to make better investment, pricing, and timing decisions?\"\n\n## Dataset Description\n\nThe Ames Housing dataset contains information on 2,930 residential home sales in Ames, Iowa from 2006-2010.\n\n### Why This Time Period Matters\n\n- **2006-2007:** Housing bubble peak\n- **2008-2009:** Financial crisis and market crash\n- **2009-2010:** Early recovery signs\n\nThis period captures a complete market cycle: boom → bust → recovery.\n\n### Variables\n\n\n\n**82 total variables including:**\n\n- **Size:** Living area, lot area, basement, garage\n- **Quality:** Overall quality (1-10), condition ratings\n- **Age:** Year built, year remodeled\n- **Features:** Bedrooms, bathrooms, fireplaces, AC, pool\n- **Location:** Neighborhood\n- **Sale:** Year/month sold, sale price\n\n### Data Quality\n\nFrom Week 5 analysis:\n\n- **Missing values:** Minimal (<5% in most columns)\n- **Outliers:** 137 homes (4.7%) using IQR method - kept as legitimate sales\n- **Data issues addressed:** Alley and Fireplace NA values represent \"not applicable\" not \"missing\"\n\n## Assumptions\n\n### Statistical Assumptions\n\n1. **Independence:** ✓ Each home sale is independent\n2. **Linearity:** ✓ Relationships approximately linear (verified with diagnostics)\n3. **Homoscedasticity:** ⚠ Violated for expensive homes (variance increases with price)\n4. **Normality:** ✓ Residuals \"normal enough\" for valid inference\n5. **No multicollinearity:** ✓ VIF < 5 for all predictors\n\n### Practical Assumptions\n\n- **Market representativeness:** Ames is a mid-sized college town; findings may not generalize to all markets\n- **Time period caveat:** 2006-2010 includes financial crisis; not representative of \"normal\" markets\n- **Data accuracy:** Assumes assessor records are accurate\n\n## Risk Mitigation\n\n- **Heteroscedasticity:** Flag predictions for homes >$300K as having wider confidence intervals\n- **Outliers:** Identified but not removed (Cook's Distance analysis shows minimal influence)\n- **Time specificity:** All recommendations caveated with time period limitations",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

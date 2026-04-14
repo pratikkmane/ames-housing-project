@@ -1,0 +1,17 @@
+{
+  "hash": "5f579fb45a9a80a404a1a973ac9fe5f7",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Ames Housing Market Intelligence\"\nsubtitle: \"A Data-Driven Guide for Real Estate Investment Decisions\"\nauthor: \"Pratik Mane\"\ndate: today\nformat:\n  html:\n    code-fold: true\n---\n\n## Executive Summary\n\n**Audience:** Ames Real Estate Investment Group\n\n**Objective:** Identify key drivers of home values and optimal investment strategies using 2006-2010 housing market data.\n\n### Key Findings\n\n1. **Quality is King:** Overall quality rating is the strongest price predictor (+$32,000 per quality point)\n2. **Timing Matters:** Seasonal swing of $10,000-20,000 between summer (peak) and winter (trough)\n3. **Crisis Impact:** 22% price decline from 2007 peak to 2009 trough, with recovery beginning in late 2009\n4. **Age Penalty:** Homes depreciate ~$XXX per year, renovation doesn't fully overcome this\n\n### Dataset Overview\n\n- **2,930 homes** sold in Ames, Iowa (2006-2010)\n- **82 variables** including size, quality, age, features, location\n- **Time period:** Captures housing bubble peak and financial crisis\n\n### Navigation\n\nUse the menu above to explore:\n\n- **Background:** Data description and methodology\n- **Price Drivers:** What features affect home values?\n- **Pricing Model:** Predictive model with 74% accuracy\n- **Market Timing:** Seasonal patterns and economic cycles\n- **Recommendations:** Actionable insights for investors, buyers, sellers\n\n---\n\n## Quick Start\n\n**For Investors:** See [Market Timing](timing.qmd) for buy/sell signals\n\n**For Sellers:** See [Recommendations](recommendations.qmd#for-sellers) for optimal listing strategy\n\n**For Buyers:** See [Price Drivers](price-drivers.qmd) for value hunting tips\n\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ncat(\"Dataset Overview:\\n\")\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\nDataset Overview:\n```\n\n\n:::\n\n```{.r .cell-code}\ncat(\"Total homes:\", nrow(ames), \"\\n\")\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\nTotal homes: 2930 \n```\n\n\n:::\n\n```{.r .cell-code}\ncat(\"Average price:\", dollar(mean(ames$SalePrice)), \"\\n\")\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\nAverage price: $180,796 \n```\n\n\n:::\n\n```{.r .cell-code}\ncat(\"Price range:\", dollar(min(ames$SalePrice)), \"to\", dollar(max(ames$SalePrice)), \"\\n\")\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\nPrice range: $12,789 to $755,000 \n```\n\n\n:::\n:::\n\n\n### Preview: Price Distribution\n\n\n::: {.cell}\n\n```{.r .cell-code}\nggplot(ames, aes(x = SalePrice)) +\n  geom_histogram(bins = 50, fill = \"#3498db\", alpha = 0.8) +\n  scale_x_continuous(labels = dollar_format()) +\n  labs(title = \"Distribution of Home Sale Prices in Ames (2006-2010)\",\n       x = \"Sale Price\",\n       y = \"Number of Homes\") +\n  theme_minimal()\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/price-distribution-1.png){width=960}\n:::\n:::\n\n\n---\n\n**Last updated:** 2026-04-13",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
