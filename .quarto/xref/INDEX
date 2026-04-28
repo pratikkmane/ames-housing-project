@@ -16,5 +16,12 @@
   },
   "timing.qmd": {
     "timing.html": "0b74d81d"
+  },
+  "slides.qmd": {
+    "slides.html": "4049a721",
+    "slides.tex": "6dbf1727"
+  },
+  "eda.qmd": {
+    "eda.html": "142aff3b"
   }
 }

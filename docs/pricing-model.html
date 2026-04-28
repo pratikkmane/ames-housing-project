@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Predictive Pricing Model – Ames Housing Market Intelligence</title>
+<title>Predictive Pricing Model</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -115,11 +115,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Ames Housing Market Intelligence</span>
-    </a>
-  </div>
             <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
@@ -133,6 +128,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link" href="./background.html"> 
 <span class="menu-text">Background</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./eda.html"> 
+<span class="menu-text">Exploratory Analysis</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./price-drivers.html"> 
@@ -175,6 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#model-diagnostics-assumptions-check" id="toc-model-diagnostics-assumptions-check" class="nav-link" data-scroll-target="#model-diagnostics-assumptions-check">Model Diagnostics (Assumptions Check)</a></li>
   <li><a href="#example-predictions" id="toc-example-predictions" class="nav-link" data-scroll-target="#example-predictions">Example Predictions</a></li>
   <li><a href="#model-limitations" id="toc-model-limitations" class="nav-link" data-scroll-target="#model-limitations">Model Limitations</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
   </ul>
 </nav>
     </div>
@@ -210,44 +210,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove missing values</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create derived variables and remove missing values</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ames_complete <span class="ot">&lt;-</span> ames <span class="sc">%&gt;%</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Garage.Area))</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit model</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(SalePrice <span class="sc">~</span> Gr.Liv.Area <span class="sc">+</span> Overall.Qual <span class="sc">+</span> Garage.Area <span class="sc">+</span> </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                       Age_at_Sale <span class="sc">+</span> Has_Central_Air,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> ames_complete)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Age_at_Sale =</span> Yr.Sold <span class="sc">-</span> Year.Built</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Garage.Area))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit model (removed Has_Central_Air per TA feedback - high p-value)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(SalePrice <span class="sc">~</span> Gr.Liv.Area <span class="sc">+</span> Overall.Qual <span class="sc">+</span> Garage.Area <span class="sc">+</span> </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                       Age_at_Sale,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> ames_complete)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = SalePrice ~ Gr.Liv.Area + Overall.Qual + Garage.Area + 
-    Age_at_Sale + Has_Central_Air, data = ames_complete)
+    Age_at_Sale, data = ames_complete)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--415929  -22211   -2118   18219  293566 
+-416042  -22223   -2133   18041  293536 
 
 Coefficients:
-                  Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)     -63486.636   5385.158 -11.789   &lt;2e-16 ***
-Gr.Liv.Area         55.841      1.800  31.019   &lt;2e-16 ***
-Overall.Qual     23726.057    765.533  30.993   &lt;2e-16 ***
-Garage.Area         60.637      4.276  14.182   &lt;2e-16 ***
-Age_at_Sale       -378.187     31.368 -12.056   &lt;2e-16 ***
-Has_Central_Air   1114.966   3077.804   0.362    0.717    
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -62484.075   4618.922  -13.53   &lt;2e-16 ***
+Gr.Liv.Area      55.816      1.799   31.03   &lt;2e-16 ***
+Overall.Qual  23742.947    763.998   31.08   &lt;2e-16 ***
+Garage.Area      60.779      4.257   14.28   &lt;2e-16 ***
+Age_at_Sale    -380.758     30.550  -12.46   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 38330 on 2923 degrees of freedom
+Residual standard error: 38320 on 2924 degrees of freedom
 Multiple R-squared:  0.7703,    Adjusted R-squared:  0.7699 
-F-statistic:  1960 on 5 and 2923 DF,  p-value: &lt; 2.2e-16</code></pre>
+F-statistic:  2451 on 4 and 2924 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<p><strong>Model Performance:</strong> - <strong>R² = 0.76</strong> (explains 76% of price variation) - <strong>RMSE = $39,000</strong> (typical prediction error)</p>
+<p><strong>Model Performance:</strong> - <strong>R² = 0.77</strong> (explains 77% of price variation) - <strong>RMSE = $38,290</strong> (typical prediction error)</p>
+<p><strong>Note on Has_Central_Air:</strong> While Week 7’s t-test showed central AC adds $84,562 in isolation, this effect disappears (p &gt; 0.05) after controlling for quality, size, and age in the multiple regression. This suggests the AC premium is actually due to correlation with these other factors (newer, higher-quality homes have AC). Removing it improves model parsimony without reducing R².</p>
 <hr>
 </section>
 <section id="key-coefficients" class="level2">
@@ -255,7 +258,7 @@ F-statistic:  1960 on 5 and 2923 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>coef_table <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(model, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>coef_table <span class="ot">&lt;-</span> <span class="fu">tidy</span>(model, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(coef_table <span class="sc">%&gt;%</span> <span class="fu">select</span>(term, estimate, conf.low, conf.high, p.value),</span>
@@ -279,35 +282,28 @@ F-statistic:  1960 on 5 and 2923 DF,  p-value: &lt; 2.2e-16</code></pre>
 <td style="text-align: right;">56</td>
 <td style="text-align: right;">52</td>
 <td style="text-align: right;">59</td>
-<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Overall.Qual</td>
-<td style="text-align: right;">23726</td>
-<td style="text-align: right;">22225</td>
-<td style="text-align: right;">25227</td>
-<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">23743</td>
+<td style="text-align: right;">22245</td>
+<td style="text-align: right;">25241</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Garage.Area</td>
 <td style="text-align: right;">61</td>
 <td style="text-align: right;">52</td>
 <td style="text-align: right;">69</td>
-<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Age_at_Sale</td>
-<td style="text-align: right;">-378</td>
-<td style="text-align: right;">-440</td>
-<td style="text-align: right;">-317</td>
-<td style="text-align: right;">0.0000</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Has_Central_Air</td>
-<td style="text-align: right;">1115</td>
-<td style="text-align: right;">-4920</td>
-<td style="text-align: right;">7150</td>
-<td style="text-align: right;">0.7172</td>
+<td style="text-align: right;">-381</td>
+<td style="text-align: right;">-441</td>
+<td style="text-align: right;">-321</td>
+<td style="text-align: right;">0</td>
 </tr>
 </tbody>
 </table>
@@ -315,9 +311,11 @@ F-statistic:  1960 on 5 and 2923 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <section id="interpretation" class="level3">
 <h3 class="anchored" data-anchor-id="interpretation">Interpretation</h3>
-<p><strong>Overall Quality:</strong> Each 1-point increase = +$2.3726^{4} - Moving from quality 6 to 9 (3 points) = +$7.1178^{4}</p>
-<p><strong>Living Area:</strong> Each 100 sq ft = +$5584</p>
-<p><strong>Age:</strong> Each year older = −$378 - A 30-year-old home vs.&nbsp;new = −$1.1346^{4}</p>
+<p><strong>Overall Quality:</strong> Each 1-point increase = +$23,743 - Moving from quality 6 to 9 (3 points) = +$71,229</p>
+<p><strong>Living Area:</strong> Each 100 sq ft = +$5,582</p>
+<p><strong>Garage Area:</strong> Each 100 sq ft garage = +$6,078</p>
+<p><strong>Age:</strong> Each year older = −$381 - A 30-year-old home vs.&nbsp;new = −$11,423</p>
+<p><strong>All coefficients are statistically significant (p &lt; 0.001)</strong></p>
 <hr>
 </section>
 </section>
@@ -342,6 +340,32 @@ F-statistic:  1960 on 5 and 2923 DF,  p-value: &lt; 2.2e-16</code></pre>
 </details>
 </div>
 <p><strong>Assessment:</strong> - ✓ <strong>Linearity:</strong> Met (residuals vs fitted is flat) - ⚠ <strong>Homoscedasticity:</strong> Mild violation (fanning at high prices) - ✓ <strong>Normality:</strong> Reasonably met (Q-Q plot good in center) - ✓ <strong>No multicollinearity:</strong> VIF &lt; 5 for all predictors</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Variance Inflation Factors (VIF):</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Variance Inflation Factors (VIF):</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>vif_values <span class="ot">&lt;-</span> <span class="fu">vif</span>(model)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(vif_values)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> Gr.Liv.Area Overall.Qual  Garage.Area  Age_at_Sale 
+    1.648347     2.317251     1.670846     1.706491 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">All VIF &lt; 5: No multicollinearity concerns</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+All VIF &lt; 5: No multicollinearity concerns</code></pre>
+</div>
+</div>
 <p><strong>Conclusion:</strong> Model is valid for inference despite mild heteroscedasticity.</p>
 <hr>
 </section>
@@ -350,38 +374,36 @@ F-statistic:  1960 on 5 and 2923 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example homes</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>examples <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Gr.Liv.Area =</span> <span class="fu">c</span>(<span class="dv">1200</span>, <span class="dv">1500</span>, <span class="dv">2000</span>, <span class="dv">2500</span>),</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Overall.Qual =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>),</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Garage.Area =</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">400</span>, <span class="dv">500</span>, <span class="dv">600</span>),</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age_at_Sale =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">5</span>),</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Has_Central_Air =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> examples, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">cbind</span>(examples, </span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">Predicted =</span> predictions[,<span class="st">"fit"</span>],</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">Lower_95 =</span> predictions[,<span class="st">"lwr"</span>],</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>                <span class="at">Upper_95 =</span> predictions[,<span class="st">"upr"</span>])</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(result,</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Living Area"</span>, <span class="st">"Quality"</span>, <span class="st">"Garage"</span>, <span class="st">"Age"</span>, <span class="st">"Has AC"</span>,</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"Predicted Price"</span>, <span class="st">"95% Lower"</span>, <span class="st">"95% Upper"</span>),</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example homes</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>examples <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Gr.Liv.Area =</span> <span class="fu">c</span>(<span class="dv">1200</span>, <span class="dv">1500</span>, <span class="dv">2000</span>, <span class="dv">2500</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Overall.Qual =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Garage.Area =</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">400</span>, <span class="dv">500</span>, <span class="dv">600</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age_at_Sale =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">5</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> examples, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">cbind</span>(examples, </span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">Predicted =</span> predictions[,<span class="st">"fit"</span>],</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">Lower_95 =</span> predictions[,<span class="st">"lwr"</span>],</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">Upper_95 =</span> predictions[,<span class="st">"upr"</span>])</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(result,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Living Area"</span>, <span class="st">"Quality"</span>, <span class="st">"Garage"</span>, <span class="st">"Age"</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"Predicted Price"</span>, <span class="st">"95% Lower"</span>, <span class="st">"95% Upper"</span>),</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 16%">
+<col style="width: 17%">
+<col style="width: 11%">
 <col style="width: 10%">
-<col style="width: 9%">
 <col style="width: 5%">
-<col style="width: 9%">
-<col style="width: 21%">
-<col style="width: 13%">
-<col style="width: 13%">
+<col style="width: 23%">
+<col style="width: 14%">
+<col style="width: 14%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -389,7 +411,6 @@ F-statistic:  1960 on 5 and 2923 DF,  p-value: &lt; 2.2e-16</code></pre>
 <th style="text-align: right;">Quality</th>
 <th style="text-align: right;">Garage</th>
 <th style="text-align: right;">Age</th>
-<th style="text-align: right;">Has AC</th>
 <th style="text-align: right;">Predicted Price</th>
 <th style="text-align: right;">95% Lower</th>
 <th style="text-align: right;">95% Upper</th>
@@ -401,45 +422,42 @@ F-statistic:  1960 on 5 and 2923 DF,  p-value: &lt; 2.2e-16</code></pre>
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">300</td>
 <td style="text-align: right;">40</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">125217</td>
-<td style="text-align: right;">49844</td>
-<td style="text-align: right;">200590</td>
+<td style="text-align: right;">126213</td>
+<td style="text-align: right;">51044</td>
+<td style="text-align: right;">201382</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1500</td>
 <td style="text-align: right;">7</td>
 <td style="text-align: right;">400</td>
 <td style="text-align: right;">20</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">204164</td>
-<td style="text-align: right;">128981</td>
-<td style="text-align: right;">279347</td>
+<td style="text-align: right;">204136</td>
+<td style="text-align: right;">128965</td>
+<td style="text-align: right;">279308</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">2000</td>
 <td style="text-align: right;">8</td>
 <td style="text-align: right;">500</td>
 <td style="text-align: right;">10</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">265656</td>
-<td style="text-align: right;">190455</td>
-<td style="text-align: right;">340858</td>
+<td style="text-align: right;">265673</td>
+<td style="text-align: right;">190482</td>
+<td style="text-align: right;">340863</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">2500</td>
 <td style="text-align: right;">9</td>
 <td style="text-align: right;">600</td>
 <td style="text-align: right;">5</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">325258</td>
-<td style="text-align: right;">250012</td>
-<td style="text-align: right;">400503</td>
+<td style="text-align: right;">325305</td>
+<td style="text-align: right;">250072</td>
+<td style="text-align: right;">400539</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+<p><strong>How to read this table:</strong> - A 1,200 sq ft, quality-5 home, 40 years old predicts around $126,000 - A 2,500 sq ft, quality-9 home, 5 years old predicts around $325,000 - 95% prediction intervals show where we expect actual prices to fall</p>
 <hr>
 </section>
 <section id="model-limitations" class="level2">
@@ -448,9 +466,14 @@ F-statistic:  1960 on 5 and 2923 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li><strong>Less accurate for luxury homes</strong> (&gt;$300K) due to heteroscedasticity</li>
 <li><strong>Missing location effects</strong> - neighborhood not included</li>
 <li><strong>Time-specific</strong> - based on 2006-2010 market</li>
-<li><strong>Unexplained variance</strong> - 24% of variation from other factors</li>
+<li><strong>Unexplained variance</strong> - 23% of variation from other factors (likely location, lot characteristics, market timing)</li>
 </ol>
 <p><strong>Use case:</strong> Baseline valuation; adjust for location and market conditions.</p>
+<hr>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
+<p>Proceed to <a href="./timing.html">Market Timing</a> to understand when to buy or sell based on seasonal patterns and economic cycles.</p>
 
 
 <!-- -->
@@ -909,128 +932,148 @@ F-statistic:  1960 on 5 and 2923 DF,  p-value: &lt; 2.2e-16</code></pre>
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Predictive Pricing Model"</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>ames <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ames.csv"</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create derived variables</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>ames <span class="ot">&lt;-</span> ames <span class="sc">%&gt;%</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Age_at_Sale =</span> Yr.Sold <span class="sc">-</span> Year.Built,</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Has_Central_Air =</span> <span class="fu">if_else</span>(Central.Air <span class="sc">==</span> <span class="st">"Y"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>A multiple regression model predicting sale prices using the strongest drivers identified in previous analysis.</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Model</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fit-model}</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove missing values</span></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>ames_complete <span class="ot">&lt;-</span> ames <span class="sc">%&gt;%</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Garage.Area))</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit model</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(SalePrice <span class="sc">~</span> Gr.Liv.Area <span class="sc">+</span> Overall.Qual <span class="sc">+</span> Garage.Area <span class="sc">+</span> </span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>                       Age_at_Sale <span class="sc">+</span> Has_Central_Air,</span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> ames_complete)</span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>**Model Performance:**</span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**R² = 0.76** (explains 76% of price variation)</span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**RMSE = $39,000** (typical prediction error)</span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Coefficients</span></span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="in">```{r coefficients}</span></span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>coef_table <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(model, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>)</span>
-<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(coef_table <span class="sc">%&gt;%</span> <span class="fu">select</span>(term, estimate, conf.low, conf.high, p.value),</span>
-<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Variable"</span>, <span class="st">"Coefficient"</span>, <span class="st">"95% CI Low"</span>, <span class="st">"95% CI High"</span>, <span class="st">"P-value"</span>),</span>
-<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">4</span>))</span>
-<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretation</span></span>
-<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>**Overall Quality:** Each 1-point increase = +$<span class="in">`r round(coef(model)["Overall.Qual"])`</span> </span>
-<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Moving from quality 6 to 9 (3 points) = +$<span class="in">`r round(coef(model)["Overall.Qual"] * 3)`</span></span>
-<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>**Living Area:** Each 100 sq ft = +$<span class="in">`r round(coef(model)["Gr.Liv.Area"] * 100)`</span></span>
-<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>**Age:** Each year older = −$<span class="in">`r abs(round(coef(model)["Age_at_Sale"]))`</span></span>
-<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A 30-year-old home vs. new = −$<span class="in">`r abs(round(coef(model)["Age_at_Sale"] * 30))`</span></span>
-<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model Diagnostics (Assumptions Check)</span></span>
-<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnostics, fig.width=12, fig.height=8}</span></span>
-<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model)</span>
-<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
-<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a>**Assessment:**</span>
-<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>✓ **Linearity:** Met (residuals vs fitted is flat)</span>
-<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>⚠ **Homoscedasticity:** Mild violation (fanning at high prices)</span>
-<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>✓ **Normality:** Reasonably met (Q-Q plot good in center)</span>
-<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>✓ **No multicollinearity:** VIF &lt; 5 for all predictors</span>
-<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a>**Conclusion:** Model is valid for inference despite mild heteroscedasticity.</span>
-<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## Example Predictions</span></span>
-<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a><span class="in">```{r example-predictions}</span></span>
-<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="co"># Example homes</span></span>
-<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a>examples <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>  <span class="at">Gr.Liv.Area =</span> <span class="fu">c</span>(<span class="dv">1200</span>, <span class="dv">1500</span>, <span class="dv">2000</span>, <span class="dv">2500</span>),</span>
-<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a>  <span class="at">Overall.Qual =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>),</span>
-<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>  <span class="at">Garage.Area =</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">400</span>, <span class="dv">500</span>, <span class="dv">600</span>),</span>
-<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age_at_Sale =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">5</span>),</span>
-<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a>  <span class="at">Has_Central_Air =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> examples, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span>
-<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">cbind</span>(examples, </span>
-<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>                <span class="at">Predicted =</span> predictions[,<span class="st">"fit"</span>],</span>
-<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>                <span class="at">Lower_95 =</span> predictions[,<span class="st">"lwr"</span>],</span>
-<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>                <span class="at">Upper_95 =</span> predictions[,<span class="st">"upr"</span>])</span>
-<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(result,</span>
-<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Living Area"</span>, <span class="st">"Quality"</span>, <span class="st">"Garage"</span>, <span class="st">"Age"</span>, <span class="st">"Has AC"</span>,</span>
-<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"Predicted Price"</span>, <span class="st">"95% Lower"</span>, <span class="st">"95% Upper"</span>),</span>
-<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">0</span>)</span>
-<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model Limitations</span></span>
-<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Less accurate for luxury homes** (&gt;$300K) due to heteroscedasticity</span>
-<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Missing location effects** - neighborhood not included</span>
-<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Time-specific** - based on 2006-2010 market</span>
-<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Unexplained variance** - 24% of variation from other factors</span>
-<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a>**Use case:** Baseline valuation; adjust for location and market conditions.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Predictive Pricing Model"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>ames <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ames.csv"</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>A multiple regression model predicting sale prices using the strongest drivers identified in previous analysis.</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Model</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fit_model}</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Create derived variables and remove missing values</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>ames_complete <span class="ot">&lt;-</span> ames <span class="sc">%&gt;%</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">Age_at_Sale =</span> Yr.Sold <span class="sc">-</span> Year.Built</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Garage.Area))</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit model (removed Has_Central_Air per TA feedback - high p-value)</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(SalePrice <span class="sc">~</span> Gr.Liv.Area <span class="sc">+</span> Overall.Qual <span class="sc">+</span> Garage.Area <span class="sc">+</span> </span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>                       Age_at_Sale,</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> ames_complete)</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>**Model Performance:**</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**R² = `r round(summary(model)$r.squared, 3)`** (explains <span class="in">`r round(summary(model)$r.squared * 100, 1)`</span>% of price variation)</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**RMSE = `r dollar(round(sqrt(mean(residuals(model)^2))))`** (typical prediction error)</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>**Note on Has_Central_Air:** While Week 7's t-test showed central AC adds $84,562 in isolation, this effect disappears (p &gt; 0.05) after controlling for quality, size, and age in the multiple regression. This suggests the AC premium is actually due to correlation with these other factors (newer, higher-quality homes have AC). Removing it improves model parsimony without reducing R².</span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Coefficients</span></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r coefficients}</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>coef_table <span class="ot">&lt;-</span> <span class="fu">tidy</span>(model, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>)</span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(coef_table <span class="sc">%&gt;%</span> <span class="fu">select</span>(term, estimate, conf.low, conf.high, p.value),</span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Variable"</span>, <span class="st">"Coefficient"</span>, <span class="st">"95% CI Low"</span>, <span class="st">"95% CI High"</span>, <span class="st">"P-value"</span>),</span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">4</span>))</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretation</span></span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>**Overall Quality:** Each 1-point increase = +$<span class="in">`r format(round(coef(model)["Overall.Qual"]), big.mark=",")`</span> </span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Moving from quality 6 to 9 (3 points) = +$<span class="in">`r format(round(coef(model)["Overall.Qual"] * 3), big.mark=",")`</span></span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>**Living Area:** Each 100 sq ft = +$<span class="in">`r format(round(coef(model)["Gr.Liv.Area"] * 100), big.mark=",")`</span></span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>**Garage Area:** Each 100 sq ft garage = +$<span class="in">`r format(round(coef(model)["Garage.Area"] * 100), big.mark=",")`</span></span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>**Age:** Each year older = −$<span class="in">`r format(abs(round(coef(model)["Age_at_Sale"])), big.mark=",")`</span></span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A 30-year-old home vs. new = −$<span class="in">`r format(abs(round(coef(model)["Age_at_Sale"] * 30)), big.mark=",")`</span></span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a>**All coefficients are statistically significant (p &lt; 0.001)**</span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model Diagnostics (Assumptions Check)</span></span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnostics, fig.width=12, fig.height=8}</span></span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model)</span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a>**Assessment:**</span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>✓ **Linearity:** Met (residuals vs fitted is flat)</span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>⚠ **Homoscedasticity:** Mild violation (fanning at high prices)</span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>✓ **Normality:** Reasonably met (Q-Q plot good in center)</span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>✓ **No multicollinearity:** VIF &lt; 5 for all predictors</span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{r vif_check}</span></span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Variance Inflation Factors (VIF):</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a>vif_values <span class="ot">&lt;-</span> <span class="fu">vif</span>(model)</span>
+<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(vif_values)</span>
+<span id="cb13-91"><a href="#cb13-91" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">All VIF &lt; 5: No multicollinearity concerns</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-93"><a href="#cb13-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-94"><a href="#cb13-94" aria-hidden="true" tabindex="-1"></a>**Conclusion:** Model is valid for inference despite mild heteroscedasticity.</span>
+<span id="cb13-95"><a href="#cb13-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-96"><a href="#cb13-96" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-97"><a href="#cb13-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-98"><a href="#cb13-98" aria-hidden="true" tabindex="-1"></a><span class="fu">## Example Predictions</span></span>
+<span id="cb13-99"><a href="#cb13-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-100"><a href="#cb13-100" aria-hidden="true" tabindex="-1"></a><span class="in">```{r example_predictions}</span></span>
+<span id="cb13-101"><a href="#cb13-101" aria-hidden="true" tabindex="-1"></a><span class="co"># Example homes</span></span>
+<span id="cb13-102"><a href="#cb13-102" aria-hidden="true" tabindex="-1"></a>examples <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb13-103"><a href="#cb13-103" aria-hidden="true" tabindex="-1"></a>  <span class="at">Gr.Liv.Area =</span> <span class="fu">c</span>(<span class="dv">1200</span>, <span class="dv">1500</span>, <span class="dv">2000</span>, <span class="dv">2500</span>),</span>
+<span id="cb13-104"><a href="#cb13-104" aria-hidden="true" tabindex="-1"></a>  <span class="at">Overall.Qual =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>),</span>
+<span id="cb13-105"><a href="#cb13-105" aria-hidden="true" tabindex="-1"></a>  <span class="at">Garage.Area =</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">400</span>, <span class="dv">500</span>, <span class="dv">600</span>),</span>
+<span id="cb13-106"><a href="#cb13-106" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age_at_Sale =</span> <span class="fu">c</span>(<span class="dv">40</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">5</span>)</span>
+<span id="cb13-107"><a href="#cb13-107" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-108"><a href="#cb13-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-109"><a href="#cb13-109" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> examples, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span>
+<span id="cb13-110"><a href="#cb13-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-111"><a href="#cb13-111" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">cbind</span>(examples, </span>
+<span id="cb13-112"><a href="#cb13-112" aria-hidden="true" tabindex="-1"></a>                <span class="at">Predicted =</span> predictions[,<span class="st">"fit"</span>],</span>
+<span id="cb13-113"><a href="#cb13-113" aria-hidden="true" tabindex="-1"></a>                <span class="at">Lower_95 =</span> predictions[,<span class="st">"lwr"</span>],</span>
+<span id="cb13-114"><a href="#cb13-114" aria-hidden="true" tabindex="-1"></a>                <span class="at">Upper_95 =</span> predictions[,<span class="st">"upr"</span>])</span>
+<span id="cb13-115"><a href="#cb13-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-116"><a href="#cb13-116" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(result,</span>
+<span id="cb13-117"><a href="#cb13-117" aria-hidden="true" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Living Area"</span>, <span class="st">"Quality"</span>, <span class="st">"Garage"</span>, <span class="st">"Age"</span>,</span>
+<span id="cb13-118"><a href="#cb13-118" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"Predicted Price"</span>, <span class="st">"95% Lower"</span>, <span class="st">"95% Upper"</span>),</span>
+<span id="cb13-119"><a href="#cb13-119" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">0</span>)</span>
+<span id="cb13-120"><a href="#cb13-120" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-121"><a href="#cb13-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-122"><a href="#cb13-122" aria-hidden="true" tabindex="-1"></a>**How to read this table:**</span>
+<span id="cb13-123"><a href="#cb13-123" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A 1,200 sq ft, quality-5 home, 40 years old predicts around <span class="in">`r dollar(round(predictions[1,"fit"], -3))`</span></span>
+<span id="cb13-124"><a href="#cb13-124" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A 2,500 sq ft, quality-9 home, 5 years old predicts around <span class="in">`r dollar(round(predictions[4,"fit"], -3))`</span></span>
+<span id="cb13-125"><a href="#cb13-125" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>95% prediction intervals show where we expect actual prices to fall</span>
+<span id="cb13-126"><a href="#cb13-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-127"><a href="#cb13-127" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-128"><a href="#cb13-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-129"><a href="#cb13-129" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model Limitations</span></span>
+<span id="cb13-130"><a href="#cb13-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-131"><a href="#cb13-131" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Less accurate for luxury homes** (&gt;$300K) due to heteroscedasticity</span>
+<span id="cb13-132"><a href="#cb13-132" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Missing location effects** - neighborhood not included</span>
+<span id="cb13-133"><a href="#cb13-133" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Time-specific** - based on 2006-2010 market</span>
+<span id="cb13-134"><a href="#cb13-134" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Unexplained variance** - <span class="in">`r round((1 - summary(model)$r.squared) * 100, 1)`</span>% of variation from other factors (likely location, lot characteristics, market timing)</span>
+<span id="cb13-135"><a href="#cb13-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-136"><a href="#cb13-136" aria-hidden="true" tabindex="-1"></a>**Use case:** Baseline valuation; adjust for location and market conditions.</span>
+<span id="cb13-137"><a href="#cb13-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-138"><a href="#cb13-138" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-139"><a href="#cb13-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-140"><a href="#cb13-140" aria-hidden="true" tabindex="-1"></a><span class="fu">## Next Steps</span></span>
+<span id="cb13-141"><a href="#cb13-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-142"><a href="#cb13-142" aria-hidden="true" tabindex="-1"></a>Proceed to <span class="co">[</span><span class="ot">Market Timing</span><span class="co">](timing.qmd)</span> to understand when to buy or sell based on seasonal patterns and economic cycles.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Background &amp; Data – Ames Housing Market Intelligence</title>
+<title>Background &amp; Data</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -115,11 +115,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Ames Housing Market Intelligence</span>
-    </a>
-  </div>
             <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
@@ -133,6 +128,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link active" href="./background.html" aria-current="page"> 
 <span class="menu-text">Background</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./eda.html"> 
+<span class="menu-text">Exploratory Analysis</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./price-drivers.html"> 
@@ -172,6 +171,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#why-this-time-period-matters" id="toc-why-this-time-period-matters" class="nav-link" data-scroll-target="#why-this-time-period-matters">Why This Time Period Matters</a></li>
   <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables">Variables</a></li>
+  </ul></li>
+  <li><a href="#variable-definitions" id="toc-variable-definitions" class="nav-link" data-scroll-target="#variable-definitions">Variable Definitions</a>
+  <ul class="collapse">
   <li><a href="#data-quality" id="toc-data-quality" class="nav-link" data-scroll-target="#data-quality">Data Quality</a></li>
   </ul></li>
   <li><a href="#assumptions" id="toc-assumptions" class="nav-link" data-scroll-target="#assumptions">Assumptions</a>
@@ -238,6 +240,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Sale:</strong> Year/month sold, sale price</li>
 </ul>
 </section>
+</section>
+<section id="variable-definitions" class="level2">
+<h2 class="anchored" data-anchor-id="variable-definitions">Variable Definitions</h2>
+<p><strong>Response Variable:</strong> - <strong>SalePrice</strong> - Final sale price of home in dollars (what we’re trying to predict)</p>
+<p><strong>Key Continuous Predictors:</strong> - <strong>Gr.Liv.Area</strong> - Above ground living area in square feet (excludes basement) - <strong>Overall.Qual</strong> - Overall material and finish quality, rated 1-10 by assessor - 1-4 = Below Average to Poor - 5-6 = Average to Above Average<br>
+- 7-8 = Good to Very Good - 9-10 = Excellent to Very Excellent - <strong>Garage.Area</strong> - Size of garage in square feet - <strong>Total.Bsmt.SF</strong> - Total basement square footage - <strong>Year.Built</strong> - Original construction year - <strong>Age_at_Sale</strong> - Derived variable: Yr.Sold - Year.Built (age when sold)</p>
+<p><strong>Key Categorical Predictors:</strong> - <strong>Central.Air</strong> - Has central air conditioning? (Y = Yes, N = No) - <strong>Neighborhood</strong> - Physical location within Ames city limits (28 neighborhoods) - <strong>House.Style</strong> - Style of dwelling (1Story, 2Story, SplitLevel, etc.)</p>
+<p><strong>Derived Variables:</strong> - <strong>Total_Bathrooms</strong> - Full.Bath + (0.5 × Half.Bath) + Bsmt.Full.Bath + (0.5 × Bsmt.Half.Bath) - <strong>Has_Central_Air</strong> - Binary version (1 = Yes, 0 = No) for regression - <strong>Recently_Renovated</strong> - If Year.Remod.Add &gt; Year.Built (1 = Yes, 0 = No)</p>
 <section id="data-quality" class="level3">
 <h3 class="anchored" data-anchor-id="data-quality">Data Quality</h3>
 <p>From Week 5 analysis:</p>
@@ -780,35 +790,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Location:** Neighborhood</span>
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Sale:** Year/month sold, sale price</span>
 <span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data Quality</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variable Definitions</span></span>
 <span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>From Week 5 analysis:</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Missing values:** Minimal (&lt;5% in most columns)</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Outliers:** 137 homes (4.7%) using IQR method - kept as legitimate sales</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Data issues addressed:** Alley and Fireplace NA values represent "not applicable" not "missing"</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="fu">## Assumptions</span></span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### Statistical Assumptions</span></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Independence:** ✓ Each home sale is independent</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Linearity:** ✓ Relationships approximately linear (verified with diagnostics)</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Homoscedasticity:** ⚠ Violated for expensive homes (variance increases with price)</span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Normality:** ✓ Residuals "normal enough" for valid inference</span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**No multicollinearity:** ✓ VIF &lt; 5 for all predictors</span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="fu">### Practical Assumptions</span></span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Market representativeness:** Ames is a mid-sized college town; findings may not generalize to all markets</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Time period caveat:** 2006-2010 includes financial crisis; not representative of "normal" markets</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Data accuracy:** Assumes assessor records are accurate</span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="fu">## Risk Mitigation</span></span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Heteroscedasticity:** Flag predictions for homes &gt;$300K as having wider confidence intervals</span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Outliers:** Identified but not removed (Cook's Distance analysis shows minimal influence)</span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Time specificity:** All recommendations caveated with time period limitations</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>**Response Variable:**</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**SalePrice** - Final sale price of home in dollars (what we're trying to predict)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>**Key Continuous Predictors:**</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Gr.Liv.Area** - Above ground living area in square feet (excludes basement)</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Overall.Qual** - Overall material and finish quality, rated 1-10 by assessor</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>1-4 = Below Average to Poor</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>5-6 = Average to Above Average  </span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>7-8 = Good to Very Good</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>9-10 = Excellent to Very Excellent</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Garage.Area** - Size of garage in square feet</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Total.Bsmt.SF** - Total basement square footage</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Year.Built** - Original construction year</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Age_at_Sale** - Derived variable: Yr.Sold - Year.Built (age when sold)</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>**Key Categorical Predictors:**</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Central.Air** - Has central air conditioning? (Y = Yes, N = No)</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Neighborhood** - Physical location within Ames city limits (28 neighborhoods)</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**House.Style** - Style of dwelling (1Story, 2Story, SplitLevel, etc.)</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>**Derived Variables:**</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Total_Bathrooms** - Full.Bath + (0.5 × Half.Bath) + Bsmt.Full.Bath + (0.5 × Bsmt.Half.Bath)</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Has_Central_Air** - Binary version (1 = Yes, 0 = No) for regression</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Recently_Renovated** - If Year.Remod.Add &gt; Year.Built (1 = Yes, 0 = No)</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data Quality</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>From Week 5 analysis:</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Missing values:** Minimal (&lt;5% in most columns)</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Outliers:** 137 homes (4.7%) using IQR method - kept as legitimate sales</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Data issues addressed:** Alley and Fireplace NA values represent "not applicable" not "missing"</span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## Assumptions</span></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="fu">### Statistical Assumptions</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Independence:** ✓ Each home sale is independent</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Linearity:** ✓ Relationships approximately linear (verified with diagnostics)</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Homoscedasticity:** ⚠ Violated for expensive homes (variance increases with price)</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Normality:** ✓ Residuals "normal enough" for valid inference</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**No multicollinearity:** ✓ VIF &lt; 5 for all predictors</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="fu">### Practical Assumptions</span></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Market representativeness:** Ames is a mid-sized college town; findings may not generalize to all markets</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Time period caveat:** 2006-2010 includes financial crisis; not representative of "normal" markets</span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Data accuracy:** Assumes assessor records are accurate</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="fu">## Risk Mitigation</span></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Heteroscedasticity:** Flag predictions for homes &gt;$300K as having wider confidence intervals</span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Outliers:** Identified but not removed (Cook's Distance analysis shows minimal influence)</span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Time specificity:** All recommendations caveated with time period limitations</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

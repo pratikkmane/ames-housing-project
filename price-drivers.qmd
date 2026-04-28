@@ -63,26 +63,42 @@ ggplot(ames, aes(x = factor(Overall.Qual), y = SalePrice)) +
 
 ### Central Air Conditioning
 
-```{r central-air}
-# T-test
+```{r central_air}
+# Create the groups FIRST
 ac_yes <- ames %>% filter(Central.Air == "Y") %>% pull(SalePrice)
 ac_no <- ames %>% filter(Central.Air == "N") %>% pull(SalePrice)
 
+# Then run the t-test
 t_result <- t.test(ac_yes, ac_no)
 
 cat("Homes WITH Central Air: mean =", dollar(mean(ac_yes)), "\n")
 cat("Homes WITHOUT Central Air: mean =", dollar(mean(ac_no)), "\n")
 cat("Difference:", dollar(mean(ac_yes) - mean(ac_no)), "\n")
 cat("P-value:", format(t_result$p.value, scientific = TRUE), "\n")
-cat("\n✓ STATISTICALLY SIGNIFICANT (p < 0.001)\n")
 ```
 
-**Finding:** Homes with central air sell for **$84,562 more** on average.
+**P-value interpretation:**
+
+The p-value of `r format(t_result$p.value, scientific = TRUE)` means:
+
+- **If central air had NO effect** on price (null hypothesis true)
+- The probability of observing a difference of `r dollar(round(mean(ac_yes) - mean(ac_no)))` or more extreme
+- **Is less than 0.001** (0.1%)
+
+In other words: This result is so extreme that it's virtually impossible to have occurred by chance alone if AC truly didn't matter. We have **very strong evidence** that central air increases home values.
+
+**Statistical significance:** ✓ p < 0.001 (highly significant)  
+**Practical significance:** `r dollar(round(mean(ac_yes) - mean(ac_no)))` difference is substantial (approximately 47% of median home price)
+
+---
 
 ### Recent Construction (2000+)
 
-```{r recent-construction}
-ames$Is_Recent <- ames$Year.Built >= 2000
+```{r recent_construction}
+# Create binary variable for recent construction
+ames <- ames %>%
+  mutate(Is_Recent = Year.Built >= 2000)
+
 recent <- ames %>% filter(Is_Recent) %>% pull(SalePrice)
 older <- ames %>% filter(!Is_Recent) %>% pull(SalePrice)
 
@@ -92,16 +108,26 @@ cat("Recent homes (2000+): mean =", dollar(mean(recent)), "\n")
 cat("Older homes (<2000): mean =", dollar(mean(older)), "\n")
 cat("Difference:", dollar(mean(recent) - mean(older)), "\n")
 cat("P-value:", format(t_result2$p.value, scientific = TRUE), "\n")
-cat("\n✓ STATISTICALLY SIGNIFICANT (p < 0.001)\n")
 ```
 
-**Finding:** Recently built homes sell for **$92,424 more** on average.
+**P-value interpretation:**
+
+The p-value of `r format(t_result2$p.value, scientific = TRUE)` means:
+
+- **If construction year had NO effect** on price (null hypothesis true)
+- The probability of observing a difference of `r dollar(round(mean(recent) - mean(older)))` or more extreme
+- **Is less than 0.001** (0.1%)
+
+**Finding:** Recently built homes (2000+) sell for **`r dollar(round(mean(recent) - mean(older)))`** more on average than older homes.
+
+**Statistical significance:** ✓ p < 0.001 (highly significant)  
+**Practical significance:** This $92K+ premium represents a 51% increase over the average older home price
 
 ---
 
 ## House Style Effect (ANOVA)
 
-```{r anova-style}
+```{r anova_style}
 # ANOVA test
 anova_result <- aov(SalePrice ~ House.Style, data = ames)
 anova_summary <- summary(anova_result)
@@ -115,7 +141,8 @@ style_summary <- ames %>%
   group_by(House.Style) %>%
   summarise(
     Count = n(),
-    Mean_Price = mean(SalePrice)
+    Mean_Price = mean(SalePrice),
+    .groups = 'drop'
   ) %>%
   arrange(desc(Mean_Price))
 
@@ -124,7 +151,18 @@ kable(style_summary,
       digits = 0)
 ```
 
-**Finding:** Two-story homes command highest prices, split-levels lowest.
+**P-value interpretation:**
+
+The p-value < 0.001 from the ANOVA test means:
+
+- **If house style had NO effect** on price (all styles have same mean price)
+- The probability of observing differences this large between groups
+- **Is less than 0.1%**
+
+**Finding:** Two-story homes command highest prices (mean: ~$200K), while split-level/multi-level homes have lowest prices (mean: ~$140K).
+
+**Statistical significance:** ✓ p < 0.001 (highly significant)  
+**Practical significance:** $60K+ difference between highest and lowest style types
 
 ---
 
@@ -139,3 +177,9 @@ kable(style_summary,
 5. **Garage Area** (r = 0.64) - Storage/parking valued
 
 **Actionable insight:** Focus on quality improvements over size additions for best ROI.
+
+---
+
+## Next Steps
+
+Proceed to [Pricing Model](pricing-model.qmd) to build a multiple regression model that controls for these features simultaneously and quantifies their independent effects.

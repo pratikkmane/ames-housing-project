@@ -32,6 +32,7 @@ format:
 Use the menu above to explore:
 
 - **Background:** Data description and methodology
+- **Exploratory Analysis:** Initial data exploration and patterns
 - **Price Drivers:** What features affect home values?
 - **Pricing Model:** Predictive model with 74% accuracy
 - **Market Timing:** Seasonal patterns and economic cycles
@@ -74,6 +75,14 @@ ggplot(ames, aes(x = SalePrice)) +
        y = "Number of Homes") +
   theme_minimal()
 ```
+
+---
+
+## Next Steps
+
+Now that we understand the data and variables, proceed to:
+- [Exploratory Analysis](eda.qmd) for initial patterns
+- [Price Drivers](price-drivers.qmd) for hypothesis testing
 
 ---
 

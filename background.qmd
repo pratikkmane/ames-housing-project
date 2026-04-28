@@ -44,6 +44,33 @@ ames <- read.csv("data/ames.csv")
 - **Location:** Neighborhood
 - **Sale:** Year/month sold, sale price
 
+## Variable Definitions
+
+**Response Variable:**
+- **SalePrice** - Final sale price of home in dollars (what we're trying to predict)
+
+**Key Continuous Predictors:**
+- **Gr.Liv.Area** - Above ground living area in square feet (excludes basement)
+- **Overall.Qual** - Overall material and finish quality, rated 1-10 by assessor
+  - 1-4 = Below Average to Poor
+  - 5-6 = Average to Above Average  
+  - 7-8 = Good to Very Good
+  - 9-10 = Excellent to Very Excellent
+- **Garage.Area** - Size of garage in square feet
+- **Total.Bsmt.SF** - Total basement square footage
+- **Year.Built** - Original construction year
+- **Age_at_Sale** - Derived variable: Yr.Sold - Year.Built (age when sold)
+
+**Key Categorical Predictors:**
+- **Central.Air** - Has central air conditioning? (Y = Yes, N = No)
+- **Neighborhood** - Physical location within Ames city limits (28 neighborhoods)
+- **House.Style** - Style of dwelling (1Story, 2Story, SplitLevel, etc.)
+
+**Derived Variables:**
+- **Total_Bathrooms** - Full.Bath + (0.5 × Half.Bath) + Bsmt.Full.Bath + (0.5 × Bsmt.Half.Bath)
+- **Has_Central_Air** - Binary version (1 = Yes, 0 = No) for regression
+- **Recently_Renovated** - If Year.Remod.Add > Year.Built (1 = Yes, 0 = No)
+
 ### Data Quality
 
 From Week 5 analysis:
