@@ -46,7 +46,20 @@ Use the menu above to explore:
 
 ## Presentation Slides
 
-[Download Presentation (PPTX)](Ames_Housing_Presentation.pptx)
+<div style="text-align: center; margin: 20px 0;">
+  <a href="Ames_Housing_Presentation.pptx" download style="display: inline-block; padding: 12px 24px; background-color: #2C5F2D; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-right: 10px;">
+    📥 Download PowerPoint (PPTX)
+  </a>
+  <a href="Ames_Housing_Presentation.pdf" target="_blank" style="display: inline-block; padding: 12px 24px; background-color: #97BC62; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+    👁️ View PDF Version
+  </a>
+</div>
+
+### Embedded Presentation
+
+<iframe src="Ames_Housing_Presentation.pdf" width="100%" height="600px" style="border: 1px solid #ccc; border-radius: 5px;"></iframe>
+
+*Click the download button above to get the full interactive PowerPoint presentation.*
 
 ## Quick Start
 

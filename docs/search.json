@@ -259,6 +259,20 @@
     "text": "Audience: Ames Real Estate Investment Group\nObjective: Identify key drivers of home values and optimal investment strategies using 2006-2010 housing market data.\n\n\n\nQuality is King: Overall quality rating is the strongest price predictor (+$32,000 per quality point)\nTiming Matters: Seasonal swing of $10,000-20,000 between summer (peak) and winter (trough)\nCrisis Impact: 22% price decline from 2007 peak to 2009 trough, with recovery beginning in late 2009\nAge Penalty: Homes depreciate ~$XXX per year, renovation doesn’t fully overcome this\n\n\n\n\n\n2,930 homes sold in Ames, Iowa (2006-2010)\n82 variables including size, quality, age, features, location\nTime period: Captures housing bubble peak and financial crisis\n\n\n\n\nUse the menu above to explore:\n\nBackground: Data description and methodology\nExploratory Analysis: Initial data exploration and patterns\nPrice Drivers: What features affect home values?\nPricing Model: Predictive model with 74% accuracy\nMarket Timing: Seasonal patterns and economic cycles\nRecommendations: Actionable insights for investors, buyers, sellers"
   },
   {
+    "objectID": "index.html#presentation-video",
+    "href": "index.html#presentation-video",
+    "title": "Ames Housing Market Intelligence",
+    "section": "Presentation Video",
+    "text": "Presentation Video"
+  },
+  {
+    "objectID": "index.html#presentation-slides",
+    "href": "index.html#presentation-slides",
+    "title": "Ames Housing Market Intelligence",
+    "section": "Presentation Slides",
+    "text": "Presentation Slides\n\n 📥 Download PowerPoint (PPTX)   👁️ View PDF Version \n\n\nEmbedded Presentation\n\n\nClick the download button above to get the full interactive PowerPoint presentation."
+  },
+  {
     "objectID": "index.html#quick-start",
     "href": "index.html#quick-start",
     "title": "Ames Housing Market Intelligence",
@@ -270,7 +284,7 @@
     "href": "index.html#next-steps",
     "title": "Ames Housing Market Intelligence",
     "section": "Next Steps",
-    "text": "Next Steps\nNow that we understand the data and variables, proceed to: - Exploratory Analysis for initial patterns - Price Drivers for hypothesis testing\n\nLast updated: 2026-04-27"
+    "text": "Next Steps\nNow that we understand the data and variables, proceed to: - Exploratory Analysis for initial patterns - Price Drivers for hypothesis testing\n\nLast updated: 2026-05-08"
   },
   {
     "objectID": "pricing-model.html",
