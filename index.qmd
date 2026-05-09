@@ -40,6 +40,14 @@ Use the menu above to explore:
 
 ---
 
+## Presentation Video
+
+{{< video https://youtu.be/3CUTpUHreD4 width="800" height="450" >}}
+
+## Presentation Slides
+
+[Download Presentation (PPTX)](Ames_Housing_Presentation.pptx)
+
 ## Quick Start
 
 **For Investors:** See [Market Timing](timing.qmd) for buy/sell signals
